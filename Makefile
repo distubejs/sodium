@@ -59,7 +59,7 @@ ec:
 libsodium:
 ifeq (,$(wildcard ${SODIUM_LIB}.*))
 	@echo Static libsodium was not found at ${SODIUM_LIB} so compiling libsodium from source.
-	@cd $(LIBSODIUM_DIR)/ && ./autogen.sh
+	@cd $(LIBSODIUM_DIR)/ && ./autogen.sh -s
 	@cd $(LIBSODIUM_DIR)/ && ./configure --enable-static \
            --enable-shared --with-pic --prefix="$(INSTALL_DIR)"
 	@cd $(LIBSODIUM_DIR)/ && make clean > /dev/null

@@ -3,6 +3,8 @@ SODIUM_EXPORT = \
 	sodium.h \
 	sodium/core.h \
 	sodium/crypto_aead_aes256gcm.h \
+	sodium/crypto_aead_aegis128l.h \
+	sodium/crypto_aead_aegis256.h \
 	sodium/crypto_aead_chacha20poly1305.h \
 	sodium/crypto_aead_xchacha20poly1305.h \
 	sodium/crypto_auth.h \
@@ -13,6 +15,7 @@ SODIUM_EXPORT = \
 	sodium/crypto_box_curve25519xchacha20poly1305.h \
 	sodium/crypto_box_curve25519xsalsa20poly1305.h \
 	sodium/crypto_core_ed25519.h \
+	sodium/crypto_core_ristretto255.h \
 	sodium/crypto_core_hchacha20.h \
 	sodium/crypto_core_hsalsa20.h \
 	sodium/crypto_core_salsa20.h \
@@ -24,6 +27,8 @@ SODIUM_EXPORT = \
 	sodium/crypto_hash_sha256.h \
 	sodium/crypto_hash_sha512.h \
 	sodium/crypto_kdf.h \
+	sodium/crypto_kdf_hkdf_sha256.h \
+	sodium/crypto_kdf_hkdf_sha512.h \
 	sodium/crypto_kdf_blake2b.h \
 	sodium/crypto_kx.h \
 	sodium/crypto_onetimeauth.h \
@@ -35,6 +40,7 @@ SODIUM_EXPORT = \
 	sodium/crypto_scalarmult.h \
 	sodium/crypto_scalarmult_curve25519.h \
 	sodium/crypto_scalarmult_ed25519.h \
+	sodium/crypto_scalarmult_ristretto255.h \
 	sodium/crypto_secretbox.h \
 	sodium/crypto_secretbox_xchacha20poly1305.h \
 	sodium/crypto_secretbox_xsalsa20poly1305.h \
@@ -56,15 +62,10 @@ SODIUM_EXPORT = \
 	sodium/crypto_verify_64.h \
 	sodium/export.h \
 	sodium/randombytes.h \
-	sodium/randombytes_salsa20_random.h \
+	sodium/randombytes_internal_random.h \
 	sodium/randombytes_sysrandom.h \
 	sodium/runtime.h \
 	sodium/utils.h
-
-if NATIVECLIENT
-SODIUM_EXPORT += \
-	sodium/randombytes_nativeclient.h
-endif
 
 EXTRA_SRC = $(SODIUM_EXPORT) \
 	sodium/version.h.in

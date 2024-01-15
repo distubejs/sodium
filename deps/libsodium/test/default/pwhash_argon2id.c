@@ -204,6 +204,7 @@ tv3(void)
     char   *out;
     char   *passwd;
     size_t  i = 0U;
+    int     ret;
 
     do {
         out = (char *) sodium_malloc(strlen(tests[i].out) + 1U);
@@ -212,13 +213,13 @@ tv3(void)
         passwd = (char *) sodium_malloc(strlen(tests[i].passwd) + 1U);
         assert(passwd != NULL);
         memcpy(passwd, tests[i].passwd, strlen(tests[i].passwd) + 1U);
-        if (crypto_pwhash_str_verify(out, passwd, strlen(passwd)) != 0) {
-            printf("[tv3] pwhash_argon2id_str failure (maybe intentional): [%u]\n",
-                   (unsigned int) i);
-            continue;
-        }
+        ret = crypto_pwhash_str_verify(out, passwd, strlen(passwd));
         sodium_free(out);
         sodium_free(passwd);
+        if (ret != 0) {
+            printf("[tv3] pwhash_argon2id_str failure (maybe intentional): [%u]\n",
+                   (unsigned int) i);
+        }
     } while (++i < (sizeof tests) / (sizeof tests[0]));
 }
 
@@ -229,7 +230,6 @@ str_tests(void)
     char       *str_out2;
     char       *salt;
     const char *passwd = "Correct Horse Battery Staple";
-
 
     salt     = (char *) sodium_malloc(crypto_pwhash_argon2id_SALTBYTES);
     str_out  = (char *) sodium_malloc(crypto_pwhash_argon2id_STRBYTES);
@@ -304,10 +304,24 @@ str_tests(void)
     if (crypto_pwhash_str(str_out2, passwd, strlen(passwd), 0, MEMLIMIT) != -1) {
         printf("pwhash_argon2id_str() with a null opslimit should have failed\n");
     }
-    if (crypto_pwhash_str_verify("$argon2id$m=65536,t=2,p=1c29tZXNhbHQ"
-                                 "$9sTbSlTio3Biev89thdrlKKiCaYsjjYVJxGAL3swxpQ",
-                                 "password", 0x100000000ULL) != -1) {
-        printf("pwhash_str_verify(invalid(0)) failure\n");
+    {
+        const char *str_in_ ="$argon2id$m=65536,t=2,p=1c29tZXNhbHQ"
+            "$9sTbSlTio3Biev89thdrlKKiCaYsjjYVJxGAL3swxpQ";
+        char       *str_in = (char *) sodium_malloc(strlen(str_in_) + 1U);
+
+        const char *password_in_ = "password";
+        char       *password_in = (char *) sodium_malloc(strlen(password_in_) + 1U);
+
+        memcpy(str_in, str_in_, strlen(str_in_) + 1U);
+        memcpy(password_in, password_in_, strlen(password_in_) + 1U);
+
+        if (crypto_pwhash_argon2i_str_verify(str_in, password_in,
+                                             0x100000000ULL) != -1) {
+            printf("pwhash_str_verify(invalid(0)) failure\n");
+        }
+
+        sodium_free(password_in);
+        sodium_free(str_in);
     }
     if (crypto_pwhash_str_verify("$argon2id$m=65536,t=2,p=1c29tZXNhbHQ"
                                  "$9sTbSlTio3Biev89thdrlKKiCaYsjjYVJxGAL3swxpQ",
@@ -480,19 +494,19 @@ main(void)
     assert(crypto_pwhash_alg_argon2id13() != crypto_pwhash_alg_argon2i13());
     assert(crypto_pwhash_alg_argon2id13() == crypto_pwhash_alg_default());
 
-    assert(crypto_pwhash_argon2id(NULL, 0, NULL, 0, NULL,
+    assert(crypto_pwhash_argon2id(guard_page, 0, (const char *) guard_page, 0, guard_page,
                                   crypto_pwhash_argon2id_OPSLIMIT_INTERACTIVE,
                                   crypto_pwhash_argon2id_MEMLIMIT_INTERACTIVE,
                                   0) == -1);
-    assert(crypto_pwhash_argon2id(NULL, 0, NULL, 0, NULL,
+    assert(crypto_pwhash_argon2id(guard_page, 0, (const char *) guard_page, 0, guard_page,
                                  crypto_pwhash_argon2id_OPSLIMIT_INTERACTIVE,
                                  crypto_pwhash_argon2id_MEMLIMIT_INTERACTIVE,
                                  crypto_pwhash_ALG_ARGON2I13) == -1);
-    assert(crypto_pwhash_argon2i(NULL, 0, NULL, 0, NULL,
+    assert(crypto_pwhash_argon2i(guard_page, 0, (const char *) guard_page, 0, guard_page,
                                  crypto_pwhash_argon2id_OPSLIMIT_INTERACTIVE,
                                  crypto_pwhash_argon2id_MEMLIMIT_INTERACTIVE,
                                  0) == -1);
-    assert(crypto_pwhash_argon2i(NULL, 0, NULL, 0, NULL,
+    assert(crypto_pwhash_argon2i(guard_page, 0, (const char *) guard_page, 0, guard_page,
                                  crypto_pwhash_argon2id_OPSLIMIT_INTERACTIVE,
                                  crypto_pwhash_argon2id_MEMLIMIT_INTERACTIVE,
                                  crypto_pwhash_ALG_ARGON2ID13) == -1);

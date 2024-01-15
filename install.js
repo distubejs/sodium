@@ -157,9 +157,7 @@ function getPlatformToolsVersion() {
         2012: 'v110',
         2013: 'v120',
         2015: 'v140',
-        2017: 'v141',
-        2019: 'v142',
-        2022: 'v143'
+        2017: 'v140',
     }
 
     var ver = platformTools[resolveMSVSVersion()];
@@ -327,8 +325,8 @@ function resolveMSVSVersion() {
         errorSetMSVSVersion();
     }
     console.log('MS Version: ' + process.env.npm_config_msvs_version);
-    var parsed = Math.min(parseInt(process.env.npm_config_msvs_version), 2022).toString();
-    if (parsed.search(/^2010|2012|2013|2015|2017|2019|2022$/)) {
+    var parsed = Math.min(parseInt(process.env.npm_config_msvs_version), 2017).toString();
+    if (parsed.search(/^2010|2012|2013|2015|2017$/)) {
         errorInvalidMSVSVersion();
     }
     return parsed;
