@@ -92,7 +92,7 @@ function recursePathList(paths) {
     var file = paths.shift();
     if (!fs.existsSync(file)) {
         try {
-            fs.mkdirSync(file, 0755);
+            fs.mkdirSync(file, 0o755);
         } catch (e) {
             throw new Error("Failed to create path: " + file + " with " + e.toString());
         }
@@ -156,11 +156,13 @@ function getPlatformToolsVersion() {
         2010: 'v100',
         2012: 'v110',
         2013: 'v120',
-        2015: 'v140'
+        2015: 'v140',
+        2017: 'v141',
+        2019: 'v142',
+        2022: 'v143'
     }
 
-    checkMSVSVersion();
-    var ver = platformTools[process.env.npm_config_msvs_version];
+    var ver = platformTools[resolveMSVSVersion()];
     if (!ver) {
         throw new Error('Please set msvs_version');
     }
@@ -299,35 +301,37 @@ function run(cmdLine, expectedExitCode, next) {
 
 function errorSetMSVSVersion() {
     console.log('Please set your Microsoft Visual Studio version before you run npm install');
-    console.log('Example for Visual Studio 2015:\n');
+    console.log('Example for Visual Studio 2022:\n');
     console.log('    For you user only:\n');
-    console.log('        npm config set msvs_version 2015\n');
+    console.log('        npm config set msvs_version 2022\n');
     console.log('    Global:\n');
-    console.log('        npm config set msvs_version 2015 --global\n');
-    console.log('Supported values are 2010, 2012, 2013, 2015\n');
+    console.log('        npm config set msvs_version 2022 --global\n');
+    console.log('Supported values are 2010, 2012, 2013, 2015, 2017, 2019, 2022\n');
     process.exit(1);
 }
 
 function errorInvalidMSVSVersion() {
     console.log('Invalid msvs_version ' + process.env.npm_config_msvs_version + '\n');
     console.log('Please set your Microsoft Visual Studio version before you run npm install');
-    console.log('Example for Visual Studio 2015:\n');
+    console.log('Example for Visual Studio 2022:\n');
     console.log('    For you user only:\n');
-    console.log('        npm config set msvs_version 2015\n');
+    console.log('        npm config set msvs_version 2022\n');
     console.log('    Global:\n');
-    console.log('        npm config set msvs_version 2015 --global\n');
-    console.log('Supported values are 2010, 2012, 2013, 2015\n');
+    console.log('        npm config set msvs_version 2022 --global\n');
+    console.log('Supported values are 2010, 2012, 2013, 2015, 2017, 2019, 2022\n');
     process.exit(1);
 }
 
-function checkMSVSVersion() {
+function resolveMSVSVersion() {
     if (!process.env.npm_config_msvs_version) {
         errorSetMSVSVersion();
     }
     console.log('MS Version: ' + process.env.npm_config_msvs_version);
-    if (process.env.npm_config_msvs_version.search(/^2010|2012|2013|2015$/)) {
+    var parsed = Math.min(parseInt(process.env.npm_config_msvs_version), 2022).toString();
+    if (parsed.search(/^2010|2012|2013|2015|2017|2019|2022$/)) {
         errorInvalidMSVSVersion();
     }
+    return parsed;
 }
 
 function isPreInstallMode() {
@@ -350,7 +354,7 @@ if (os.platform() !== 'win32') {
         run('make nodesodium');
     }
 } else {
-    checkMSVSVersion();
+    resolveMSVSVersion();
     if (isPreInstallMode()) {
         console.log('Preinstall Mode');
         createFullPath("deps/build/include/sodium");
