@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-2019]
+        node: [16, 18, 20, 21]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          check-latest: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          architecture: "x64"
+      - name: macos deps
+        if: matrix.os == 'macos-latest'
+        run: brew install automake
+      - name: configure npm
+        if: matrix.os == 'windows-2019'
+        run: npm config set msvs_version 2019
+      - name: install
+        run: npm ci
+      - name: test
+        run: make test

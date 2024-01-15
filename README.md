@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/paixaop/node-sodium.png)](http://travis-ci.org/paixaop/node-sodium)
+![Build Status](https://github.com/distubejs/sodium/actions/workflows/main.yml/badge.svg)
 
 # node-sodium
 
@@ -12,12 +12,12 @@ Uses Libsodium 1.0.16
 Port of the [lib sodium](https://github.com/jedisct1/libsodium) Encryption Library to Node.js.
 
 As of libsodium 1.0.11 all functions except memory allocation have been implemented.
-Missing functions are listed in [`docs/not implemented.md`](https://github.com/paixaop/node-sodium/blob/master/docs/not%20implemented.md).
+Missing functions are listed in [`docs/not implemented.md`](https://github.com/distubejs/sodium/blob/master/docs/not%20implemented.md).
 
 
 There's a "low level" native module that gives you access directly to Lib Sodium, and a friendlier high level API that makes the library a bit easier to use.
 
-Check [`docs/low-level-api.md`](https://github.com/paixaop/node-sodium/tree/master/docs/low-level-api.md) for a list of all lib sodium functions included in node-sodium.
+Check [`docs/low-level-api.md`](https://github.com/distubejs/sodium/tree/master/docs/low-level-api.md) for a list of all lib sodium functions included in node-sodium.
 
 # Usage
 
@@ -60,10 +60,10 @@ As you can see the high level API implementation is easier to use, but the low l
 You can find this code sample in `examples\low-level-api.js`.
 
 # Documentation
-Please read the work in progress documentation found under [`docs/`](https://github.com/paixaop/node-sodium/tree/master/docs).
+Please read the work in progress documentation found under [`docs/`](https://github.com/distubejs/sodium/tree/master/docs).
 
 You should also review the unit tests as most of the high level API is "documented" there.
-Don't forget to check out the [examples](https://github.com/paixaop/node-sodium/tree/master/examples) as well.
+Don't forget to check out the [examples](https://github.com/distubejs/sodium/tree/master/examples) as well.
 
 The low level `libsodium` API documentation is now complete. All ported functions have been documented in [low-level-api.md](./docs/low-level-api.md) with code examples.
 
@@ -113,13 +113,13 @@ You MUST set the `msvs_version` `npm config` variable to the appropriate Microso
 
 Example set `msvs_version` for your user only:
 
-    npm config set msvs_version 2015
+    npm config set msvs_version 2022
 
 Example set `msvs_version` for all users:
 
-    npm config set msvs_version 2015 --global
+    npm config set msvs_version 2022 --global
 
-At the moment only 2010, 2012, 2013 and 2015 versions are supported.
+At the moment only 2010, 2012, 2013, 2015, 2017, 2019 and 2022 versions are supported. However, later versions will resolve to the latest supported version due to [binary compatibility](https://docs.microsoft.com/en-us/cpp/porting/binary-compat-2015-2017)
 
 Now run
 
